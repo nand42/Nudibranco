@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ziphius</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand">Ziphius <span class="muted">· Claudio</span></div>
+  <div class="status">
+    <span id="conn" class="pill off">scollegato</span>
+    <span id="busy" class="pill">fermo</span>
+    <span id="zone" class="pill">—</span>
+  </div>
+  <button id="stop" class="danger" title="Arresto (Esc)">STOP</button>
+</header>
+
+<main class="grid">
+  <section class="card">
+    <h2>Motori</h2>
+    <div id="motors"></div>
+    <p class="hint">Tastiera: ←/→ corpo (M1) · ↑/↓ laser (M0) · W/S braccio (M2) · Q/E pinza (M3) ·
+      Maiusc = 5° · Spazio = laser · Esc = stop</p>
+  </section>
+
+  <section class="card">
+    <h2>Laser e gesti</h2>
+    <div class="row">
+      <button id="laser" class="toggle">Laser OFF</button>
+    </div>
+    <div class="row" id="gestures"></div>
+    <h3>Comportamento</h3>
+    <div class="row">
+      <button data-cmd="random">Random ora</button>
+      <button data-cmd="rand0">Random OFF</button>
+      <button data-cmd="rand1">Random dopo 60 s</button>
+    </div>
+    <div class="row">
+      <button data-cmd="guard20000">Ritorno in posizione ON</button>
+      <button data-cmd="guard0">Ritorno OFF</button>
+      <button data-cmd="restore">Ritorna ora</button>
+    </div>
+    <div class="row">
+      <button data-cmd="touch1">Tatto ON</button>
+      <button data-cmd="touch0">Tatto OFF</button>
+      <button data-cmd="read">Aggiorna stato</button>
+    </div>
+    <p class="muted small" id="flags"></p>
+  </section>
+
+  <section class="card">
+    <h2>Pose</h2>
+    <ul id="poses" class="list"></ul>
+    <form id="pose-form" class="row">
+      <input id="pose-name" placeholder="nome posa" maxlength="30" required>
+      <button type="submit">Salva posa attuale</button>
+    </form>
+  </section>
+
+  <section class="card wide">
+    <h2>Console</h2>
+    <form id="raw-form" class="row">
+      <input id="raw" placeholder="es. P1lXw500XP1cXhello" autocomplete="off">
+      <button type="submit">Invia</button>
+    </form>
+    <ul id="jobs" class="list"></ul>
+    <pre id="log" class="log"></pre>
+  </section>
+</main>
+
+<form method="post" action="/logout" class="logout"><button class="link">Esci</button></form>
+<script src="/static/app.js"></script>
+</body>
+</html>

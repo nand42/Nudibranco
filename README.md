@@ -3,6 +3,9 @@ Arduino and Python project to control robotic arm equipped with a laser
 
 Diagrammi di flusso (firmware vecchio e nuovo, tatto, protocollo): [docs/FLOWCHART.md](docs/FLOWCHART.md)
 
+**Ziphius V4** (pagina web di controllo, Raspberry Pi): `python -m ziphius serve`. Vedi [docs/ZIPHIUS.md](docs/ZIPHIUS.md).
+Firmware: `AstopZ` = arresto immediato fuori coda; `read` riporta anche `R:` (random attivo), `E:` (random abilitato), `T:` (tatto), `G:` (ritorno in posizione, ms).
+
 ## Hardware
 
 | Componente | Pin Arduino Uno | Note |

@@ -229,6 +229,7 @@ void resetPositions(bool reset); // reset=true => posizione iniziale, false => u
 void sendResponse(String msg);
 void sendError(String msg);
 void enqueue(const String &cmds);
+void emergencyStop();
 void queueFront(const String &cmds);
 String popCommand();
 void setLaser(bool on);
@@ -427,7 +428,10 @@ void processIncomingSerial() {
       int endIdx = serialBuffer.lastIndexOf(CMD_END);
       if (startIdx >= 0 && endIdx > startIdx) {
         String cmds = serialBuffer.substring(startIdx + 1, endIdx);
-        if (commandQueue.length() + cmds.length() + 1 > MAX_QUEUE_LEN) {
+        if (cmds.equalsIgnoreCase("stop")) {
+          // Arresto immediato: non passa dalla coda
+          emergencyStop();
+        } else if (commandQueue.length() + cmds.length() + 1 > MAX_QUEUE_LEN) {
           sendError(F("Queue full, packet discarded."));
         } else {
           // Aggiunge i comandi estratti alla coda, sempre chiusi da un separatore:
@@ -447,6 +451,17 @@ void processIncomingSerial() {
       sendError(F("Serial buffer overflow."));
     }
   }
+}
+
+// Arresto di emergenza ("AstopZ"): svuota la coda, annulla wait e random, spegne il laser.
+// I servo gia' alimentati completano il movimento in corso e si staccano normalmente.
+void emergencyStop() {
+  commandQueue = "";
+  waitUntil = 0;
+  periodicMode = false;
+  setLaser(false);
+  wasBusy = true; // segue un "IDLE"
+  sendResponse(F("STOPPED"));
 }
 
 // Aggiunge uno o più comandi in fondo alla coda (sempre terminati dal separatore)
@@ -551,6 +566,8 @@ void processCommand(String command) {
       pos += "M" + String(i) + ":" + String(currentPositions[i]) + " ";
     }
     pos += String(F("L:")) + (laserOn ? 1 : 0) + F(" D:") + lastDistanceCm;
+    pos += String(F(" R:")) + ((periodicMode || (periodicEnabled && (millis() - lastSerialTime > serialTimeout))) ? 1 : 0);
+    pos += String(F(" E:")) + (periodicEnabled ? 1 : 0) + F(" T:") + (touchEnabled ? 1 : 0) + F(" G:") + autoRestoreInterval;
     sendResponse(pos);
     return;
   }
@@ -626,7 +643,7 @@ void processCommand(String command) {
   if (command.equalsIgnoreCase("help")) {
     Serial.println(F("Commands: <m><ang> F<m><ang> P0bd/bu/u/fu/fd P1ll/l/c/r/rr P2f/l/mm/m/c P3oo/o/c"));
     Serial.println(F("w<ms> wait<ms> reset restore check raimbow random rand0 rand1 read"));
-    Serial.println(F("L1 L0 guard<ms> delta<deg> sonar touch0 touch1 hello shy yes no help"));
+    Serial.println(F("L1 L0 guard<ms> delta<deg> sonar touch0 touch1 hello shy yes no help | AstopZ = arresto immediato"));
     return;
   }
   if (playGesture(command)) return;

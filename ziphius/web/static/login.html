@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ziphius · accesso</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login">
+  <form method="post" action="/login" class="card login-card">
+    <h1>Ziphius</h1>
+    <p class="muted">Controllo di Claudio</p>
+    <label for="pin">PIN</label>
+    <input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="current-password" autofocus required>
+    <p id="err" class="err" hidden></p>
+    <button type="submit" class="primary">Entra</button>
+  </form>
+<script>
+  const e = new URLSearchParams(location.search).get("e");
+  const el = document.getElementById("err");
+  if (e) {
+    el.hidden = false;
+    el.textContent = e === "locked" ? "Troppi tentativi: riprova tra un minuto." : "PIN errato.";
+  }
+</script>
+</body>
+</html>

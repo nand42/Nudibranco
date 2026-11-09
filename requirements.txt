@@ -1,0 +1,9 @@
+# Ziphius V4 (python -m ziphius)
+pyserial>=3.5
+fastapi>=0.110
+uvicorn>=0.27
+websockets>=12
+python-multipart>=0.0.9
+# Solo per ZiphiusV3.py
+numpy
+matplotlib
